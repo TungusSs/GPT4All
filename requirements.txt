@@ -1,3 +1,4 @@
 g4f~=0.2.5.7
 discord~=2.3.2
 python-decouple
+curl_cffi
