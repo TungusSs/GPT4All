@@ -7,6 +7,8 @@ import g4f
 from discord.ext import commands
 from discord import Intents
 
+from decouple import config
+
 intents = Intents.default()
 intents.guilds = True
 intents.message_content = True
@@ -52,4 +54,4 @@ async def imagine(ctx, *, args):
         # await ctx.send(f"Привет. Ты использовал команду `/imagine`. Так же ты мне написал текст: `{args}`")
 
 
-bot.run(os.getenv("DISCORD_TOKEN"))
+bot.run(config("DISCORD_TOKEN"))
