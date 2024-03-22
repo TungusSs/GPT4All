@@ -17,7 +17,7 @@ class API:
     providers = g4f.Provider
 
     @staticmethod
-    async def get_answer(prompt: str, model=models.gpt_4_turbo, provider=None) -> MessageResponse:
+    async def get_answer(prompt: str, model=models.gpt_4, provider=None) -> MessageResponse:
         try:
             if provider:
                 answer = await g4f.ChatCompletion.create_async(
