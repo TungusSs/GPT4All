@@ -18,6 +18,8 @@ intents.members = True
 
 bot = commands.Bot(command_prefix="/", intents=intents)
 
+current_guild = 1219544962949972051
+
 
 @bot.event
 async def on_ready():
@@ -63,27 +65,32 @@ async def imagine(interaction: discord.Interaction, prompt: str):
             os.remove(image)
 
 
+async def roles_autocomplete(
+    interaction: discord.Interaction,
+    current: str,
+) -> list[app_commands.Choice[str]]:
+    return DiscordTools.get_role_choices(bot)
+
+
 @bot.tree.command(name="whois", description="Получить список пользователей с определённой ролью.")
 @app_commands.describe(role_name="Название роли")
+@app_commands.autocomplete(role_name=roles_autocomplete)
 async def whois(interaction: discord.Interaction, role_name: str):
     await interaction.response.defer(ephemeral=True, thinking=True)
     
-    all_roles = interaction.guild.roles
-    
-    current_role_id = [role.id for role in all_roles if role.name == role_name][0]
-    
-    if not current_role_id:
+    try:
+        current_role_id = [role.id for role in interaction.guild.roles if role.name == role_name][0]
+    except IndexError:
         await interaction.followup.send(f"**В текущем канале нет ролей.**", ephemeral=True)
         return
     
-    all_members = [member for member in interaction.guild.members]
-    members_with_role = [member.mention for member in all_members if member.get_role(current_role_id)]
+    members_with_role = [member.mention for member in interaction.guild.members if member.get_role(current_role_id)]
     
     if not members_with_role:
         await interaction.followup.send(f"**Пользователи с ролью {role_name} не найдены.**", ephemeral=True)
         return
     
-    await interaction.followup.send(f"**Все пользователи с ролью {role_name}:**\n{', '.join(members_with_role)}", ephemeral=True)
+    await interaction.followup.send(f"**Все пользователи с ролью `{role_name}`:**\n{', '.join(members_with_role)}", ephemeral=True)
 
 
 bot.run(config("DISCORD_TOKEN"))
