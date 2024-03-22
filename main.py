@@ -14,6 +14,7 @@ from Utils.discord_tools import DiscordTools
 
 intents = Intents.default()
 intents.message_content = True
+intents.members = True
 
 bot = commands.Bot(command_prefix="/", intents=intents)
 
@@ -63,27 +64,26 @@ async def imagine(interaction: discord.Interaction, prompt: str):
 
 
 @bot.tree.command(name="whois", description="Получить список пользователей с определённой ролью.")
-@app_commands.describe(role_id="ID роли")
-async def whois(interaction: discord.Interaction, role_id: str):
+@app_commands.describe(role_name="Название роли")
+async def whois(interaction: discord.Interaction, role_name: str):
     await interaction.response.defer(ephemeral=True, thinking=True)
-
-    # Проверяем, существует ли роль с таким ID
-    role = discord.utils.get(interaction.guild.roles, id=int(role_id))
-    if role is None:
-        await interaction.followup.send("Роль не найдена.", ephemeral=True)
+    
+    all_roles = interaction.guild.roles
+    
+    current_role_id = [role.id for role in all_roles if role.name == role_name][0]
+    
+    if not current_role_id:
+        await interaction.followup.send(f"**В текущем канале нет ролей.**", ephemeral=True)
         return
-
-    # Получаем список пользователей с этой ролью
-    members_with_role = [member for member in interaction.guild.members if role in member.roles]
-
-    # Формируем список в виде строки
-    member_list = "\n".join([member.mention for member in members_with_role])
-
-    # Отправляем список пользователю
-    if member_list:
-        await interaction.followup.send(f"Пользователи с ролью {role.name}:\n{member_list}", ephemeral=True)
-    else:
-        await interaction.followup.send(f"Нет пользователей с ролью {role.name}.", ephemeral=True)
+    
+    all_members = [member for member in interaction.guild.members]
+    members_with_role = [member.mention for member in all_members if member.get_role(current_role_id)]
+    
+    if not members_with_role:
+        await interaction.followup.send(f"**Пользователи с ролью {role_name} не найдены.**", ephemeral=True)
+        return
+    
+    await interaction.followup.send(f"**Все пользователи с ролью {role_name}:**\n{', '.join(members_with_role)}", ephemeral=True)
 
 
 bot.run(config("DISCORD_TOKEN"))
