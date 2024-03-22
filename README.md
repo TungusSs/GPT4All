@@ -13,13 +13,13 @@ This is a Discord-bot written in Python that was made as part of a pet project a
 
 
 ## 🚀 Features 🚀 <a name="features"></a>
-<!-- The following features are available with the KlavoGonki Cheat browser extension:
-- **Automated text input** 📝: The script allows you to automate the process of typing in Russian or English text with or without errors. This feature can help you to improve your typing speed and accuracy on KlavoGonki platform.
+The following features are available with the KlavoGonki Cheat browser extension:
+- **Support slash(/) commands!** 📝: Supports various commands such as `/ask`, `/imagine`, `/whois`.
 - **Customizable delay** ⏰: You can set a delay for the automated text input to adjust the typing speed according to your preference and skill level.
 - **Error correction** ✅: The script includes an error correction mechanism that allows you to automatically correct mistakes while typing.
 - **Language selection** 🗣️: The script supports both Russian and English languages, so you can choose the language you want to practice typing in.
 - **Mistake-free mode** 🙅: This feature allows you to type without making any mistakes, which can be useful for training your muscle memory and improving your typing accuracy.
-- **Easy installation** 💻: The installation process is straightforward and only requires a few steps to get started with the script. -->
+- **Easy installation** 💻: The installation process is straightforward and only requires a few steps to get started with the script.
 
 
 ## 🛠 Installation 🛠 <a name="installation"></a>
@@ -34,11 +34,11 @@ This is a Discord-bot written in Python that was made as part of a pet project a
 
 
 ## ⌨️ Usage ⌨️ <a name="usage"></a>
-<!-- To use the KlavoGonki Cheat extension, simply navigate to the KlavoGonki website and start a race. The additional features will be available in the "Settings" block on the right-hand side of the screen. Select your desired language and error correction options, and adjust the typing speed if desired.
+To use the KlavoGonki Cheat extension, simply navigate to the KlavoGonki website and start a race. The additional features will be available in the "Settings" block on the right-hand side of the screen. Select your desired language and error correction options, and adjust the typing speed if desired.
 The basic functions of the script are implemented when you enter the room and are displayed **in the "Settings "** block. There are three buttons displayed in this block:
 - **Russian** _(implements the script with the Russian language)_.
 - **English** _(the script works with the English language)_.
-- **Errorless** _(the script works without making any mistakes)_. -->
+- **Errorless** _(the script works without making any mistakes)_.
 
 
 ## 🤝 Contributing 🤝 <a name="contributing"></a>
