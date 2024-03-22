@@ -62,4 +62,28 @@ async def imagine(interaction: discord.Interaction, prompt: str):
             os.remove(image)
 
 
+@bot.tree.command(name="whois", description="Получить список пользователей с определённой ролью.")
+@app_commands.describe(role_id="ID роли")
+async def whois(interaction: discord.Interaction, role_id: str):
+    await interaction.response.defer(ephemeral=True, thinking=True)
+
+    # Проверяем, существует ли роль с таким ID
+    role = discord.utils.get(interaction.guild.roles, id=int(role_id))
+    if role is None:
+        await interaction.followup.send("Роль не найдена.", ephemeral=True)
+        return
+
+    # Получаем список пользователей с этой ролью
+    members_with_role = [member for member in interaction.guild.members if role in member.roles]
+
+    # Формируем список в виде строки
+    member_list = "\n".join([member.mention for member in members_with_role])
+
+    # Отправляем список пользователю
+    if member_list:
+        await interaction.followup.send(f"Пользователи с ролью {role.name}:\n{member_list}", ephemeral=True)
+    else:
+        await interaction.followup.send(f"Нет пользователей с ролью {role.name}.", ephemeral=True)
+
+
 bot.run(config("DISCORD_TOKEN"))
