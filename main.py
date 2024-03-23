@@ -11,7 +11,6 @@ from decouple import config
 
 from API.ask import Ask
 from API.imagine import Imagine
-from Utils.discord_tools import DiscordTools
 
 
 intents = Intents.default()
@@ -77,7 +76,7 @@ async def roles_autocomplete(
     interaction: discord.Interaction,
     current: str,
 ) -> list[app_commands.Choice[str]]:
-    return DiscordTools.get_role_choices(bot)
+    return [app_commands.Choice(name=role.name, value=role.name) for guild in bot.guilds for role in guild.roles]
 
 
 @bot.tree.command(name="whois", description="Получить список пользователей с определённой ролью.")
