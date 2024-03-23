@@ -68,7 +68,7 @@ class Imagine:
         try:
             result = await Imagine.__func[model](prompt)
             
-            # os.replace()
+            os.mkdir(f"./cache/{user_id}")
             shutil.move(result, f"./cache/{user_id}/1.png")
                 
             return ImageResponse(
