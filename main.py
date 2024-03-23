@@ -9,7 +9,8 @@ from discord.ext import commands
 from discord import Intents, app_commands
 from decouple import config
 
-from Utils.api import API
+from API.ask import Ask
+from API.imagine import Imagine
 from Utils.discord_tools import DiscordTools
 
 
@@ -41,11 +42,10 @@ async def on_ready():
 @bot.tree.command(name="ask", description="Сгенерировать ответ на запрос.")
 @app_commands.describe(prompt="Ваш запрос")
 async def ask(interaction: discord.Interaction, prompt: str):
-    # response = await API.get_answer(prompt)
-    task = asyncio.create_task(API.get_answer(prompt))
-    await tasks_queue.put(task)
-    
     await interaction.response.defer(ephemeral=True, thinking=True)
+    
+    task = asyncio.create_task(Ask.get_answer(prompt))
+    await tasks_queue.put(task)
     
     await task
     
@@ -55,25 +55,22 @@ async def ask(interaction: discord.Interaction, prompt: str):
         await interaction.followup.send(f"**Ответ:**\n{task.result().message}")
 
 
-@bot.tree.command(name="imagine", description="Сгенерировать изображения.")
+@bot.tree.command(name="imagine", description="Сгенерировать изображение.")
 @app_commands.describe(prompt="Ваш запрос")
 async def imagine(interaction: discord.Interaction, prompt: str):
-    task = asyncio.create_task(API.get_image(prompt, interaction.user.id))
-    await tasks_queue.put(task)
-    
     await interaction.response.defer(ephemeral=True, thinking=True)
+    
+    task = asyncio.create_task(Imagine.get_image(prompt, interaction.user.id))
+    await tasks_queue.put(task)
     
     await task
     
     if task.result().status != 200:
         await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {task.result().message} ⚠️*")
-    else:      
-        files = DiscordTools.convert2files(task.result().files)
-          
-        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Изображения:**", files=files)
-        
-        for image in task.result().files:
-            os.remove(image)
+    else:         
+        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Изображение:**", file=discord.File(task.result().file))
+
+        os.remove(task.result().file)
 
 
 async def roles_autocomplete(
