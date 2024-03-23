@@ -51,7 +51,7 @@ async def ask(interaction: discord.Interaction, prompt: str):
     if task.result().status != 200:
         await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {task.result().message} ⚠️*")
     else:
-        await interaction.followup.send(f"**Ответ:**\n{task.result().message}")
+        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Ответ:**\n{task.result().message}")
 
 
 @bot.tree.command(name="imagine", description="Сгенерировать изображение.")
