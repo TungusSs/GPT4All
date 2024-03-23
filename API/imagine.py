@@ -2,6 +2,7 @@
 
 
 import os
+import shutil
 
 import discord
 from gradio_client import Client
@@ -67,7 +68,8 @@ class Imagine:
         try:
             result = await Imagine.__func[model](prompt)
             
-            os.replace(result, f"./cache/{user_id}/1.png")
+            # os.replace()
+            shutil.move(result, f"./cache/{user_id}/1.png")
                 
             return ImageResponse(
                 status=200,
@@ -78,7 +80,7 @@ class Imagine:
         except Exception as e:
             print(e)
         
-            return ImageResponse(status=400, message="Возникла неизвестная ошибка при генерации изображений", prompt=prompt, files=[])
+            return ImageResponse(status=400, message="Возникла неизвестная ошибка при генерации изображений", prompt=prompt, file=[])
     
     
     __func = {"sdxl": sdxl, "playground": playground, "sd_cascade": sd_cascade}
