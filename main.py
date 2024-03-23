@@ -2,6 +2,7 @@
 
 
 import os
+import asyncio
 
 import discord
 from discord.ext import commands
@@ -17,6 +18,7 @@ intents.message_content = True
 intents.members = True
 
 bot = commands.Bot(command_prefix="/", intents=intents)
+tasks_queue = asyncio.Queue()
 
 current_guild = 1219544962949972051
 
@@ -24,6 +26,8 @@ current_guild = 1219544962949972051
 @bot.event
 async def on_ready():
     print(f"{bot.user.name} был подключён к Discord!")
+    
+    bot.loop.create_task(process_tasks())
     
     try:
         synced = await bot.tree.sync()
@@ -37,31 +41,38 @@ async def on_ready():
 @bot.tree.command(name="ask", description="Сгенерировать ответ на запрос.")
 @app_commands.describe(prompt="Ваш запрос")
 async def ask(interaction: discord.Interaction, prompt: str):
+    # response = await API.get_answer(prompt)
+    task = asyncio.create_task(API.get_answer(prompt))
+    await tasks_queue.put(task)
+    
     await interaction.response.defer(ephemeral=True, thinking=True)
     
-    response = await API.get_answer(prompt)
+    await task
     
-    if response.status != 200:
-        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {response.message} ⚠️*")
+    if task.result().status != 200:
+        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {task.result().message} ⚠️*")
     else:
-        await interaction.followup.send(f"**Ответ:**\n{response.message}")
+        await interaction.followup.send(f"**Ответ:**\n{task.result().message}")
 
 
 @bot.tree.command(name="imagine", description="Сгенерировать изображения.")
 @app_commands.describe(prompt="Ваш запрос")
 async def imagine(interaction: discord.Interaction, prompt: str):
+    task = asyncio.create_task(API.get_image(prompt, interaction.user.id))
+    await tasks_queue.put(task)
+    
     await interaction.response.defer(ephemeral=True, thinking=True)
     
-    response = await API.get_image(prompt, interaction.user.id)
+    await task
     
-    if response.status != 200:
-        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {response.message} ⚠️*")
+    if task.result().status != 200:
+        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {task.result().message} ⚠️*")
     else:      
-        files = DiscordTools.convert2files(response.files)
+        files = DiscordTools.convert2files(task.result().files)
           
         await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Изображения:**", files=files)
         
-        for image in response.files:
+        for image in task.result().files:
             os.remove(image)
 
 
@@ -92,5 +103,16 @@ async def whois(interaction: discord.Interaction, role_name: str):
     
     await interaction.followup.send(f"**Все пользователи с ролью `{role_name}`:**\n{', '.join(members_with_role)}", ephemeral=True)
 
+
+async def process_tasks():
+    while True:
+        task = await tasks_queue.get()
+        try:
+            await task
+        except Exception as e:
+            print(f"Ошибка при выполнении задачи: {e}")
+        finally:
+            tasks_queue.task_done()
+            
 
 bot.run(config("DISCORD_TOKEN"))
