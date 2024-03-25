@@ -30,6 +30,10 @@ current_guild = 1219544962949972051
 async def on_ready():
     logger.info(f"Бот {bot.user.name} был подключён к Discord!")
     
+    if not os.path.exists("./cache/"):
+        os.mkdir("./cache/")
+        logger.info("Каталог ./cache/ успешно создана")
+    
     for user in bot.users:
         if not os.path.exists(f"./cache/{user.id}/"):
             logger.info(f"Уникальный каталог для пользователя '{user.name}' (ID: {user.id}) успешно создан")
@@ -40,10 +44,6 @@ async def on_ready():
     try:
         synced = await bot.tree.sync()
         logger.info(f"Было синхронизировано {len(synced)} команд(ы)")
-        
-        if not os.path.exists("./cache/"):
-            os.mkdir("./cache/")
-            logger.info("Каталог ./cache/ успешно создана")
     except Exception as e:
         logger.error(f"При выполнении синхронизации произошла ошибка: {e}")
 
