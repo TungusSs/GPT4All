@@ -13,12 +13,12 @@ This is a Discord-bot written in Python that was made as part of a pet project a
 
 ## 🚀 Features 🚀 <a name="features"></a>
 The following features are available with the GPT4All bot:
-- **Support slash(/) commands!** 📝: Supports various commands such as `/ask`, `/imagine`, `/whois`, `/settings`.
+- **Support slash(/) commands!** 📝: Supports various commands such as `/ask`, `/imagine`, `/whois`, `/settings`, `/help`.
 - **Command `/ask`** 💭: The command allows you to set your query to the GPT model and get an answer. At the moment, the approximate response delay is `from 2 to 6 seconds`. All models available in the [gpt4free](https://github.com/xtekky/gpt4free) repository are available.
 - **Command `/imagine`** 🎨: The command allows you to specify your query to the model for DALLE-3, BingAI-based image generations. Currently, the response delay is `between 5 and 10 seconds`. Due to the fact that Discord compresses images, the maximum image quality is `slightly` lost, unfortunately we can't fix this at the moment, but we are working on it!
 - **Command `/whois`** 🤔: The command allows you to get all users with the role as a list by `role name` or `role ID`. Works `depending on the text channel`. `Example:` If a user with a role does not have access to the text channel where the command is called, he will not be displayed in the list of users with that role.
-- **Command `/settings`** 🙅: This command brings up the bot's settings window, where you can configure the `GPT model` to use the `/ask` command from the drop-down list. More customizations will be added in the future, and this section will be updated with usage examples.
-- **Command `/help`** 🆘: The command brings up an embedded window with commands information, developer team information, and a link to bot's GitHub
+- **Command `/settings`** 🙅: This command brings up the bot settings window, where you can configure the `GPT model` to use the `/ask` command from the drop-down list. More customizations will be added in the future, and this section will be updated with usage examples.
+- **Command `/help`** 🆘: The command brings up an embedded window with commands information, developer team information, and a link to bot GitHub
 - **Easy installation** 💻: The installation process is straightforward and only requires you to click on the link, choose server select the server you want to add the bot to, and add it. Just that simple.
 
 
