@@ -100,6 +100,60 @@ async def whois(interaction: discord.Interaction, role_name: str):
     await interaction.followup.send(f"**Все пользователи с ролью `{role_name}`:**\n{', '.join(members_with_role)}", ephemeral=True)
 
 
+@bot.tree.command(name="help", description="Информация по командам бота")
+async def help(interaction: discord.Interaction):
+    embed = discord.Embed(
+        title="Общая информация о боте",
+        description="Здесь вы можете найти информацию о командах",
+        color=0x6698a9
+    )
+
+    embed.add_field(
+        name="/ask",
+        value="Сгенерировать ответ на запрос.\nИспользуйте: `/ask Ваш запрос`",
+        inline=False
+    )
+    embed.add_field(
+        name="/imagine",
+        value="Сгенерировать изображение по запросу.\nИспользуйте: `/imagine Ваш запрос`",
+        inline=False
+    )
+
+    embed.add_field(
+        name="/whois",
+        value="Отобразить всех пользователей с определенной ролью.\nИспользуйте: `/whois Название роли`",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Разработчики",
+        value="Информация о разработчиках и ссылки на их социальные сети",
+        inline=False
+    )
+    embed.add_field(
+        name="Tungus",
+        value="[Telegram](https://t.me/ArnoVictorDorianne)\n[GitHub](https://github.com/TungusSs)\n[LinkedIn](https://www.linkedin.com/in/nikitakuznetsovv/)",
+        inline=True
+    )
+    embed.add_field(
+        name="Oustery",
+        value="[Telegram](https://t.me/Oustery)\n[GitHub](https://github.com/oustery)",
+        inline=True
+    )
+
+    embed.add_field(
+        name="GitHub проекта",
+        value="[GitHub](https://github.com/TungusSs/GPT4All)",
+        inline=False
+    )
+
+    embed.set_thumbnail(url="https://cdn.discordapp.com/app-icons/1219539189310427136/333f190e10a39605f26552afe8a18322.png?size=256&quot")
+
+    embed.set_footer(text="Бот разработан с ❤️ командой разработчиков")
+
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+
 async def process_tasks():
     while True:
         task = await tasks_queue.get()
