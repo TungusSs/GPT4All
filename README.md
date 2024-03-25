@@ -2,7 +2,6 @@
 - [Project description](#project-description)
 - [Features](#features)
 - [Installation](#installation)
-- [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -13,32 +12,22 @@ This is a Discord-bot written in Python that was made as part of a pet project a
 
 
 ## 🚀 Features 🚀 <a name="features"></a>
-<!-- The following features are available with the KlavoGonki Cheat browser extension:
-- **Automated text input** 📝: The script allows you to automate the process of typing in Russian or English text with or without errors. This feature can help you to improve your typing speed and accuracy on KlavoGonki platform.
-- **Customizable delay** ⏰: You can set a delay for the automated text input to adjust the typing speed according to your preference and skill level.
-- **Error correction** ✅: The script includes an error correction mechanism that allows you to automatically correct mistakes while typing.
-- **Language selection** 🗣️: The script supports both Russian and English languages, so you can choose the language you want to practice typing in.
-- **Mistake-free mode** 🙅: This feature allows you to type without making any mistakes, which can be useful for training your muscle memory and improving your typing accuracy.
-- **Easy installation** 💻: The installation process is straightforward and only requires a few steps to get started with the script. -->
+The following features are available with the GPT4All bot:
+- **Support slash(/) commands!** 📝: Supports various commands such as `/ask`, `/imagine`, `/whois`, `/settings`, `/help`.
+- **Command `/ask`** 💭: The command allows you to set your query to the GPT model and get an answer. At the moment, the approximate response delay is `from 2 to 6 seconds`. All models available in the [gpt4free](https://github.com/xtekky/gpt4free) repository are available.
+- **Command `/imagine`** 🎨: The command allows you to specify your query to the model for DALLE-3, BingAI-based image generations. Currently, the response delay is `between 5 and 10 seconds`. Due to the fact that Discord compresses images, the maximum image quality is `slightly` lost, unfortunately we can't fix this at the moment, but we are working on it!
+- **Command `/whois`** 🤔: The command allows you to get all users with the role as a list by `role name` or `role ID`. Works `depending on the text channel`. `Example:` If a user with a role does not have access to the text channel where the command is called, he will not be displayed in the list of users with that role.
+- **Command `/settings`** 🙅: This command brings up the bot settings window, where you can configure the `GPT model` to use the `/ask` command from the drop-down list. More customizations will be added in the future, and this section will be updated with usage examples.
+- **Command `/help`** 🆘: The command brings up an embedded window with commands information, developer team information, and a link to bot GitHub
+- **Easy installation** 💻: The installation process is straightforward and only requires you to click on the link, choose server select the server you want to add the bot to, and add it. Just that simple.
 
 
 ## 🛠 Installation 🛠 <a name="installation"></a>
-<!-- - Go to the `Automa` extension website ([Chrome](https://chrome.google.com/webstore/detail/automa/infppggnoaenmfagbfknfkancpbljcca) and [Firefox](https://addons.mozilla.org/en-US/firefox/addon/automa/)).
-- Install the extension.
-- Next, you need to download the file [`automa.json`](https://raw.githubusercontent.com/TungusSs/klavogonki-cheat/feature-and-update-branch/automa/automa.json).
-- Click on the icon of the `Automa`.
-- Click on the icon in the form of `home`.
-- Then go to the `Workflows` section in the sidebar.
-- Next to the `New workflow` button, click on the arrow.
-- Then click on the `Import workflow` button and select the downloaded file. -->
-
-
-## ⌨️ Usage ⌨️ <a name="usage"></a>
-<!-- To use the KlavoGonki Cheat extension, simply navigate to the KlavoGonki website and start a race. The additional features will be available in the "Settings" block on the right-hand side of the screen. Select your desired language and error correction options, and adjust the typing speed if desired.
-The basic functions of the script are implemented when you enter the room and are displayed **in the "Settings "** block. There are three buttons displayed in this block:
-- **Russian** _(implements the script with the Russian language)_.
-- **English** _(the script works with the English language)_.
-- **Errorless** _(the script works without making any mistakes)_. -->
+<!--- TODO: Добавить ссылку на добавление бота на сервер --->
+- Follow the link
+- Select your server to which you want to add a bot and add it
+- ???
+- PROFIT
 
 
 ## 🤝 Contributing 🤝 <a name="contributing"></a>

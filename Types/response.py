@@ -13,7 +13,7 @@ class BaseResponse:
 @dataclass
 class ImageResponse(BaseResponse):
     prompt: str
-    files: list[str]
+    file: str
     
 @dataclass
 class MessageResponse(BaseResponse):
