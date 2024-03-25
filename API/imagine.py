@@ -5,16 +5,21 @@ import os
 import shutil
 
 import discord
+from loguru import logger
 from gradio_client import Client
 
 from Types.imagine_models import ImagineModels
 from Types.response import ImageResponse
 
 
+logger.add("GPT4All.log", format="{time} {level} {message}")
+
+
 class Imagine:
     
     @staticmethod
     async def sdxl(prompt: str) -> str:
+        logger.info(f"Отправка запроса '{prompt}' модели 'SDXL' на генерацию изображения.")
         client = Client("ByteDance/SDXL-Lightning")
         result = client.predict(
         	prompt,
@@ -22,11 +27,14 @@ class Imagine:
         	api_name="/generate_image"
         )
         
+        logger.info(f"Сгенерированное изображение по запросу '{prompt}' модели 'SDXL' успешно получено")
+        
         return result
 
 
     @staticmethod
     async def playground(prompt: str) -> str:
+        logger.info(f"Отправка запроса '{prompt}' модели 'Playground v2.5' на генерацию изображения.")
         client = Client("https://playgroundai-playground-v2-5.hf.space/--replicas/amkzc/")
         result = client.predict(
         		prompt,	# str  in 'Prompt' Textbox component
@@ -40,11 +48,14 @@ class Imagine:
         		api_name="/run"
         )
         
+        logger.info(f"Сгенерированное изображение по запросу '{prompt}' модели 'Playground v2.5' успешно получено")
+        
         return result[0][0]["image"]
     
     
     @staticmethod
     async def sd_cascade(prompt: str) -> str:
+        logger.info(f"Отправка запроса '{prompt}' модели 'SD Cascade' на генерацию изображения.")
         client = Client("multimodalart/stable-cascade")
         result = client.predict(
         		prompt,	# str  in 'Prompt' Textbox component
@@ -60,6 +71,8 @@ class Imagine:
         		api_name="/run"
         )
         
+        logger.info(f"Сгенерированное изображение по запросу '{prompt}' модели 'SD Cascade' успешно получено")
+        
         return result
 
     
@@ -68,10 +81,16 @@ class Imagine:
         try:
             result = await Imagine.__func[model](prompt)
             
+            logger.info(f"Загрузка сгенерированного изображения по запросу '{prompt}' модели '{model}'")
+            
             if not os.path.exists(f"./cache/{user_id}"):
+                logger.info(f"Создание уникальной папки для пользователя с ID '{user_id}'")
                 os.mkdir(f"./cache/{user_id}")
-                
+            
+            logger.info(f"Перемещение сгенерированного изображения по запросу '{prompt}' модели '{model}' в папку для пользователя с ID '{user_id}'")
             shutil.move(result, f"./cache/{user_id}/1.png")
+            
+            logger.info(f"Изображение сгенерировано по запросу '{prompt}' модели '{model}' и перемещено в папку для пользователя с ID '{user_id}'")
                 
             return ImageResponse(
                 status=200,
@@ -80,9 +99,8 @@ class Imagine:
                 file=f"./cache/{user_id}/1.png"
             )
         except Exception as e:
-            print(e)
-        
-            return ImageResponse(status=400, message="Возникла неизвестная ошибка при генерации изображений", prompt=prompt, file=[])
+            logger.error(f"При получении изображения по запросу '{prompt}' модели '{model}' произошла ошибка: {e}")
+            return ImageResponse(status=400, message=e, prompt=prompt, file=[])
     
     
     __func = {"sdxl": sdxl, "playground": playground, "sd_cascade": sd_cascade}
