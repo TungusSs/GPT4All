@@ -5,3 +5,4 @@ curl_cffi
 gradio_client
 setuptools
 loguru
+wget
