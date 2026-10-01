@@ -8,4 +8,4 @@ from dataclasses import dataclass
 class ImagineModels:
     sdxl: str = "sdxl"
     playground: str = "playground"
-    sd_cascade: str = "sd-cascade"
+    sd_cascade: str = "sd_cascade"
