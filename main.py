@@ -26,9 +26,9 @@ current_guild = 1219544962949972051
 @bot.event
 async def on_ready():
     print(f"{bot.user.name} был подключён к Discord!")
-    
+
     bot.loop.create_task(process_tasks())
-    
+
     try:
         synced = await bot.tree.sync()
         print(f"Синхронизировано {len(synced)} команд.")
@@ -42,12 +42,12 @@ async def on_ready():
 @app_commands.describe(prompt="Ваш запрос")
 async def ask(interaction: discord.Interaction, prompt: str):
     await interaction.response.defer(ephemeral=True, thinking=True)
-    
+
     task = asyncio.create_task(Ask.get_answer(prompt))
     await tasks_queue.put(task)
-    
+
     await task
-    
+
     if task.result().status != 200:
         await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {task.result().message} ⚠️*")
     else:
@@ -58,25 +58,40 @@ async def ask(interaction: discord.Interaction, prompt: str):
 @app_commands.describe(prompt="Ваш запрос")
 async def imagine(interaction: discord.Interaction, prompt: str):
     await interaction.response.defer(ephemeral=True, thinking=True)
-    
+
     task = asyncio.create_task(Imagine.get_image(prompt, interaction.user.id))
     await tasks_queue.put(task)
-    
-    await task
-    
-    if task.result().status != 200:
-        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {task.result().message} ⚠️*")
-    else:         
-        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Изображение:**", file=discord.File(task.result().file))
 
-        os.remove(task.result().file)
+    await task
+    result = task.result()
+
+    if result.status != 200:
+        await interaction.followup.send(f"**Ваш запрос:** *{prompt}*\n**Результат**:*⚠️ {result.message} ⚠️*")
+        return
+
+    try:
+        await interaction.followup.send(
+            f"**Ваш запрос:** *{prompt}*\n**Изображение:**",
+            file=discord.File(result.file),
+        )
+    finally:
+        if result.file and os.path.isfile(result.file):
+            os.remove(result.file)
 
 
 async def roles_autocomplete(
     interaction: discord.Interaction,
     current: str,
 ) -> list[app_commands.Choice[str]]:
-    return [app_commands.Choice(name=role.name, value=role.name) for guild in bot.guilds for role in guild.roles]
+    if interaction.guild is None:
+        return []
+
+    query = current.casefold()
+    return [
+        app_commands.Choice(name=role.name, value=role.name)
+        for role in interaction.guild.roles
+        if query in role.name.casefold()
+    ][:25]
 
 
 @bot.tree.command(name="whois", description="Получить список пользователей с определённой ролью.")
@@ -84,19 +99,23 @@ async def roles_autocomplete(
 @app_commands.autocomplete(role_name=roles_autocomplete)
 async def whois(interaction: discord.Interaction, role_name: str):
     await interaction.response.defer(ephemeral=True, thinking=True)
-    
+
+    if interaction.guild is None:
+        await interaction.followup.send("**Команда доступна только на сервере.**", ephemeral=True)
+        return
+
     try:
         current_role_id = [role.id for role in interaction.guild.roles if role.name == role_name][0]
     except IndexError:
-        await interaction.followup.send(f"**В текущем канале нет ролей.**", ephemeral=True)
+        await interaction.followup.send("**В текущем канале нет ролей.**", ephemeral=True)
         return
-    
+
     members_with_role = [member.mention for member in interaction.guild.members if member.get_role(current_role_id)]
-    
+
     if not members_with_role:
         await interaction.followup.send(f"**Пользователи с ролью {role_name} не найдены.**", ephemeral=True)
         return
-    
+
     await interaction.followup.send(f"**Все пользователи с ролью `{role_name}`:**\n{', '.join(members_with_role)}", ephemeral=True)
 
 
@@ -147,7 +166,7 @@ async def help(interaction: discord.Interaction):
         inline=False
     )
 
-    embed.set_thumbnail(url="https://cdn.discordapp.com/app-icons/1219539189310427136/333f190e10a39605f26552afe8a18322.png?size=256&quot")
+    embed.set_thumbnail(url="https://cdn.discordapp.com/app-icons/1219539189310427136/333f190e10a39605f26552afe8a18322.png?size=256")
 
     embed.set_footer(text="Бот разработан с ❤️ командой разработчиков")
 
@@ -163,6 +182,6 @@ async def process_tasks():
             print(f"Ошибка при выполнении задачи: {e}")
         finally:
             tasks_queue.task_done()
-            
+
 
 bot.run(config("DISCORD_TOKEN"))
